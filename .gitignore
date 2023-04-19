@@ -113,4 +113,3 @@ certs/**
 output.txt
 
 libcms/scanners/cache/**
-skeleton.db
