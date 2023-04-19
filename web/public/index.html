@@ -1,90 +1,217 @@
 <html>
+
 <head>
-<link rel="stylesheet" href="static/bootstrap.css">
+    <link rel="stylesheet" href="static/bootstrap.css">
+    <title>WebScan Results | Skeleton</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"
+        integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <style>
+        button {
+            background-color: #4CAF50;
+            /* Green */
+            border: none;
+            color: white;
+            padding: 8px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 20px;
+        }
+
+        .card-header {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            /* align-content: center; */
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title {
+            font-size: 1.5em;
+        }
+
+        .clickable {
+            cursor: pointer;
+        }
+        li.list-group-item.active a {
+  color: white;
+}
+
+    </style>
 </head>
+
 <body>
-<div class="container">
-    <div class="card" id="card_scan">
-        <div class="card-header">
-            <div class="card-title">Scan selection</div>
-        </div>
-        <div class="card-body">
-            <ul class="list-group" id="scan_list">
+    <div class="container">
+        <div align="center">
+            <a href="https://github.com/RITEKROUNAK/skeleton">
+                <img src="static/logo1.png" alt="Logo" width="auto" height="80">
+            </a>
+            <p style="font-size: 20px; font-weight: 600;">Web Application Vulnerability Scanner</p>
+            <p style="font-size: 15px;">By : Ritek Rounak</p>
 
-            </ul>
         </div>
+        <div class="card" id="card_scan">
+            <div class="card-header">
+                <div class="card-title">Scan Selection 🔍</div>
+                <button onclick="downloadPDF()">Download PDF</button>
+            </div>
+            <div class="card-body">
+                <ul class="list-group" id="scan_list">
+
+                </ul>
+            </div>
+        </div>
+        <br>
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title clickable" id="serverityheading">Severity ℹ️</div>
+            </div>
+            <div class="card-body" id="serveritycont">
+                <div class="alert alert-secondary" role="alert">
+                    <b>Informational</b> - This is a simple information message. It is not a problem, and it is not an
+                    error.
+                </div>
+                <div class="alert alert-info" role="alert">
+                    <b>Low risk</b> - This message is an information message. It is not a problem, and it is not an error.
+                </div>
+                <div class="alert alert-warning" role="alert">
+                    <b>Medium risk</b> - This message is a warning. It is not a problem, but it may become one in the
+                    future.
+                </div>
+                <div class="alert alert-danger" role="alert">
+                    <b>High risk</b> - This message is an error. It is a problem, and it must be fixed.
+                </div>
+                <div class="alert alert-dark" role="alert">
+                    <b>Debug</b> - This message is a debug message. It is not a problem, and it is not an error.
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class="card" id="card_results">
+            <div class="card-header">
+                <div class="card-title">Scan Results 📄</div>
+            </div>
+            <div class="card-body">
+                <ul class="list-group" id="result_list">
+
+                </ul>
+            </div>
+        </div>
+
+        <footer>
+            <br>
+            <div align="center" style="font-size: 30px;">
+                <a href="https://ritekrounak.github.io/portfolio/" target="_blank">&copy; Ritek Rounak </a>
+            </div>
+        </footer>
+
     </div>
-    <div class="card" id="card_results">
-        <div class="card-header">
-            <div class="card-title">Scan Results</div>
-        </div>
-        <div class="card-body">
-            <ul class="list-group" id="result_list">
-
-            </ul>
-        </div>
-    </div>
-
-</div>
-<script src="static/jquery-3.4.1.js" type="text/javascript"></script>
-<script src="static/bootstrap.js" type="text/javascript"></script>
-<script>
-    $.getJSON("/scans", function(data){
-        $.each(data, function(index, value){
-            var element = $('<li class="list-group-item list-group-item"></li>');
-            element.append("<h5 onclick='load(" + value.id + ")'>" + value.domain + "</h5>");
-            element.append("<hr />");
-            element.append("<p>Entry: <a href='"+value.start_url+"'>"+value.start_url+"</a><br /> Start: " + value.started + " <br />End: " + value.ended + "</p>");
-            $('#scan_list').append(element);
-        });
-    });
-
-    function bs4_color(severity) {
-        switch(severity) {
-            case 0:
-                return '-secondary'
-            case 1:
-                return '-info'
-            case 2:
-                return '-warning'
-            case 3:
-                return '-danger'
-            default:
-                return '-secondary'
-        }
-    }
-
-    function bs4_txt(severity) {
-        switch(severity) {
-            case 0:
-                return 'Informational'
-            case 1:
-                return 'Low risk'
-            case 2:
-                return 'Medium risk'
-            case 3:
-                return 'High risk'
-            default:
-                return 'Debug'
-        }
-    }
-
-    function load(scan_id) {
-        $('#result_list').html('');
-        $('#card_scan').hide();
-        $.getJSON("/results/" + scan_id, function(data){
-            $.each(data, function(index, value){
-                var element = $('<li class="list-group-item list-group-item list-group-item' + bs4_color(value.severity) + '"></li>');
-                element.append("<h5>[" + bs4_txt(value.severity) + "] " + value.type + " / " + value.module + "</h5>");
+    <script src="static/jquery-3.4.1.js" type="text/javascript"></script>
+    <script src="static/bootstrap.js" type="text/javascript"></script>
+    <script>
+        $.getJSON("/scans", function (data) {
+            var i = 1;
+            $.each(data, function (index, value) {
+                var element = $('<li class="list-group-item list-group-item"></li>');
+                element.append("<h5 onclick='load(" + value.id + ")' class='clickable'>" + i + "<span>. </span>" + value.domain + "</h5>");
                 element.append("<hr />");
-                element.append("<p>Detected on: " + value.detected + "</p>");
-                var data = value.data;
-                var parsed = JSON.parse(data);
-                element.append("<pre>" + JSON.stringify(parsed, undefined, 2) + "</pre>");
-                $('#result_list').append(element);
+                element.append("<p>Entry: 🌏 <a href='" + value.start_url + "'>" + value.start_url + "</a><br /> Start: 🕰️ " + value.started + " <br />End: " + value.ended + "</p>");
+                $('#scan_list').append(element);
+                // increment value of i by 1
+                i++;
             });
         });
-    }
-</script>
+
+        function bs4_color(severity) {
+            switch (severity) {
+                case 0:
+                    return '-secondary'
+                case 1:
+                    return '-info'
+                case 2:
+                    return '-warning'
+                case 3:
+                    return '-danger'
+                default:
+                    return '-secondary'
+            }
+        }
+
+        function bs4_txt(severity) {
+            switch (severity) {
+                case 0:
+                    return 'Informational'
+                case 1:
+                    return 'Low risk'
+                case 2:
+                    return 'Medium risk'
+                case 3:
+                    return 'High risk'
+                default:
+                    return 'Debug'
+            }
+        }
+
+        function load(scan_id) {
+            $('#result_list').html('');
+            // $('#card_scan').hide();
+            //add active class to the selected scan
+            $('#scan_list li').removeClass('active');
+            $('#scan_list li').each(function () {
+                if ($(this).find('h5').attr('onclick').split('(')[1].split(')')[0] == scan_id) {
+                    $(this).addClass('active');
+                }
+
+            });
+
+            $.getJSON("/results/" + scan_id, function (data) {
+                $.each(data, function (index, value) {
+                    var element = $('<li class="list-group-item list-group-item list-group-item' + bs4_color(value.severity) + '"></li>');
+                    element.append("<h5>[" + bs4_txt(value.severity) + "] " + value.type + " / " + value.module + "</h5>");
+                    element.append("<hr />");
+                    element.append("<p>Detected on: " + value.detected + "</p>");
+                    var data = value.data;
+                    var parsed = JSON.parse(data);
+                    element.append("<pre>" + JSON.stringify(parsed, undefined, 2) + "</pre>");
+                    $('#result_list').append(element);
+                });
+            });
+        }
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"
+        integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        function downloadPDF() {
+            const element = document.documentElement;
+            const options = {
+                margin: 0.15,
+                filename: 'my_website_vulnerability_report.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+            html2pdf().set(options).from(element).save();
+        }
+
+
+    </script>
+
+<script>
+    const heading = document.querySelector('#serverityheading');
+    const content = document.querySelector('#serveritycont');
+  
+    heading.addEventListener('click', () => {
+      content.classList.toggle('d-none');
+    });
+  </script>
 </body>
+
 </html>
