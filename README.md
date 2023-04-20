@@ -1,7 +1,5 @@
 # skeleton
 
-Multi-threaded open-source web application security scanner
-
 The current version can detect the following vulnerabilities:
 
 - SQL-Injections
