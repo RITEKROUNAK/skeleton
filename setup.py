@@ -9,7 +9,7 @@ setup(
     url='https://github.com/RITEKROUNAK/skeleton',
     license='Apache 2.0',
     author='RITEKROUNAK',
-    author_email='stefan@stefanvlems.nl',
+    author_email='ritekrounak1@gmail.com',
     description='A Python based Web Application security scanner',
     # long_description=open(join(abspath(dirname(__file__)), "README.rst")).read(),
     classifiers=[
